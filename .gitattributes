@@ -1,0 +1,31 @@
+* text=auto eol=lf
+
+*.kt text
+*.kts text
+*.java text
+*.xml text
+*.json text
+*.js text
+*.svg text
+*.keep text
+*.properties text
+*.toml text
+gradlew text
+*.bat text eol=crlf
+**/.gitignore text
+**/.gitattributes text
+**/.editorconfig text
+**/.gitkeep text
+LICENSE text
+*.md text
+*.txt text
+*.yml text
+*.yaml text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.jar binary

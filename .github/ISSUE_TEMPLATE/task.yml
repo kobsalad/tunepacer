@@ -1,0 +1,21 @@
+name: Task
+description: Track main features and changes
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What needs to be done?
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What must be true for this task to be complete?
+      value: |
+        - [ ]
+    validations:
+      required: true
