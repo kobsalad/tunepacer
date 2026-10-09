@@ -1,9 +1,6 @@
 package com.tunepacer
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,12 +12,12 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.tunepacer.history.HistoryScreen
-import com.tunepacer.navigation.horizontalTabTransition
 import com.tunepacer.run.RunScreen
 import com.tunepacer.spotify.SpotifyScreen
 import com.tunepacer.ui.components.BottomNavBar
 import com.tunepacer.ui.components.BottomNavButton
 import com.tunepacer.ui.theme.TunePacerTheme
+import com.tunepacer.ui.util.horizontalTabTransition
 import kotlinx.serialization.Serializable
 
 private sealed interface AppNavKey {
@@ -42,9 +39,7 @@ fun App() {
 
         Scaffold(
             bottomBar = {
-                BottomNavBar(
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)
-                ) {
+                BottomNavBar {
                     BottomNavButton(
                         onClick = {
                             backStack.clear()

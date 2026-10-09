@@ -1,6 +1,5 @@
 package com.tunepacer.ui.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
@@ -11,26 +10,36 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun RowScope.BottomNavButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     selected: Boolean,
     icon: @Composable () -> Unit,
     label: String
 ) {
+    val primaryColor = MaterialTheme.colorScheme.primary
     Button(
         onClick = onClick,
-        modifier = modifier
+        modifier = Modifier
             .height(56.dp)
             .weight(1f)
-            .border(
-                width = if (selected) 2.dp else 0.dp,
-                color = MaterialTheme.colorScheme.primary
-            ),
+            .drawWithContent {
+                drawContent()
+
+                val strokeWidthPx = (if (selected) 3.dp else 1.dp).toPx()
+
+                drawLine(
+                    color = primaryColor,
+                    start = Offset(x = 0f, y = strokeWidthPx / 2),
+                    end = Offset(x = size.width, y = strokeWidthPx / 2),
+                    strokeWidth = strokeWidthPx
+                )
+            },
         shape = RectangleShape,
         colors =
             if (selected) ButtonDefaults.buttonColors(

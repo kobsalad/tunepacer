@@ -15,13 +15,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RowScope.TopNavButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     selected: Boolean,
     label: String
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
+        modifier = Modifier
             .height(48.dp)
             .weight(1f)
             .border(

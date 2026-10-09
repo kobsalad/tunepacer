@@ -10,11 +10,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TopNavBar(
-    modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {

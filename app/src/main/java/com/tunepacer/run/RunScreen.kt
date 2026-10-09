@@ -10,9 +10,9 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.tunepacer.navigation.horizontalTabTransition
 import com.tunepacer.ui.components.TopNavBar
 import com.tunepacer.ui.components.TopNavButton
+import com.tunepacer.ui.util.horizontalTabTransition
 import kotlinx.serialization.Serializable
 
 private sealed interface RunNavKey {

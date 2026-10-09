@@ -1,4 +1,4 @@
-package com.tunepacer.navigation
+package com.tunepacer.ui.util
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ContentTransform
