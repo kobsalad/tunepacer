@@ -1,7 +1,8 @@
 package com.tunepacer.run
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
@@ -10,6 +11,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.tunepacer.run.freerun.FreeRunScreen
+import com.tunepacer.run.workout.WorkoutScreen
 import com.tunepacer.ui.components.TopNavBar
 import com.tunepacer.ui.components.TopNavButton
 import com.tunepacer.ui.util.horizontalTabTransition
@@ -29,31 +32,30 @@ fun RunScreen() {
     val backStack = rememberNavBackStack(RunNavKey.FreeRun)
     val saveableStateHolder = rememberSaveableStateHolder()
 
-    Scaffold(
-        topBar = {
-            TopNavBar {
-                TopNavButton(
-                    onClick = {
-                        backStack.clear()
-                        backStack.add(RunNavKey.FreeRun)
-                    },
-                    selected = backStack.lastOrNull() == RunNavKey.FreeRun,
-                    label = "Free Run"
-                )
-                TopNavButton(
-                    onClick = {
-                        backStack.clear()
-                        backStack.add(RunNavKey.Workout)
-                    },
-                    selected = backStack.lastOrNull() == RunNavKey.Workout,
-                    label = "Workout"
-                )
-            }
+    Column(modifier = Modifier.fillMaxHeight()) {
+        TopNavBar {
+            TopNavButton(
+                onClick = {
+                    backStack.clear()
+                    backStack.add(RunNavKey.FreeRun)
+                },
+                selected = backStack.lastOrNull() == RunNavKey.FreeRun,
+                label = "Free Run"
+            )
+            TopNavButton(
+                onClick = {
+                    backStack.clear()
+                    backStack.add(RunNavKey.Workout)
+                },
+                selected = backStack.lastOrNull() == RunNavKey.Workout,
+                label = "Workout"
+            )
         }
-    ) { innerPadding ->
+
+        Spacer(modifier = Modifier.weight(1f))
+
         NavDisplay(
             backStack = backStack,
-            modifier = Modifier.padding(innerPadding),
             entryProvider = entryProvider {
                 entry(RunNavKey.FreeRun, RunNavKey.FreeRun.toString()) {
                     saveableStateHolder.SaveableStateProvider(RunNavKey.FreeRun.toString()) {

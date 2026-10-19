@@ -1,4 +1,4 @@
-package com.tunepacer.run
+package com.tunepacer.run.workout
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
