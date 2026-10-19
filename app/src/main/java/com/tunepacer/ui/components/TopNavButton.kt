@@ -1,8 +1,7 @@
 package com.tunepacer.ui.components
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
@@ -31,12 +30,9 @@ fun RowScope.TopNavButton(
         color =
             if (selected) MaterialTheme.colorScheme.surfaceContainerHigh
             else MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onSurface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        Box(contentAlignment = Alignment.Center) {
             Text(label,
                 style = MaterialTheme.typography.labelLarge
             )
