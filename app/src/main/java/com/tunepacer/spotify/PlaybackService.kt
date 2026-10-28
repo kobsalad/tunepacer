@@ -30,4 +30,11 @@ class PlaybackService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    // Trigger shutdown of everything when the user fully closes the app
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        SpotifyBrowser.shutdown()
+        stopSelf()
+        android.os.Process.killProcess(android.os.Process.myPid())
+    }
 }

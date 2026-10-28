@@ -1,0 +1,33 @@
+{
+    "manifest_version": 3,
+    "name": "SpotSpeeder",
+    "version": "1.0",
+    "description": "Control Spotify playback speed from TunePacer.",
+    "author": "TunePacer",
+
+    "permissions": [
+        "nativeMessaging",
+        "nativeMessagingFromContent",
+        "geckoViewAddons"
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "spotspeeder@tunepacer.com"
+        }
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["https://open.spotify.com/*"],
+            "js": ["messaging.js"],
+            "run_at": "document_start"
+        },
+        {
+            "matches": ["https://open.spotify.com/*"],
+            "js": ["playback.js"],
+            "run_at": "document_start",
+            "world": "MAIN"
+        }
+    ]
+}
