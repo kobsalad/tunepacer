@@ -32,7 +32,7 @@ fun FreeRunStatsScreen(
     onEndRun: () -> Unit
 ) {
     // Placeholder data
-    val distance = 2253.08
+    val distance = 2253.08f
     val time = 754
     val currentPace = 520
     val currentCadence = 172

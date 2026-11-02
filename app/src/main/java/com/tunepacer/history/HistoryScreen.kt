@@ -17,7 +17,7 @@ fun HistoryScreen() {
             0,
             if (Random.nextBoolean()) "Workout Name" else null,
             Random.nextLong(1700000000, 1790000000),
-            Random.nextDouble(1.0, 100000.0),
+            (Random.nextFloat() + 1) * (100000 - 1),
             Random.nextInt(1, 100000),
             Random.nextInt(100, 200)
         )
