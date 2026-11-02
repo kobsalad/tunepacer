@@ -172,7 +172,7 @@ fun WorkoutItem(workoutData: Workout) {
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                Text("+",
+                                Text("New segment",
                                     style = MaterialTheme.typography.labelLarge)
                             }
                         }
