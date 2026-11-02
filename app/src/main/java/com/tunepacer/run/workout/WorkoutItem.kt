@@ -77,6 +77,7 @@ fun WorkoutItem(workoutData: Workout) {
                         ) {
                             Text(
                                 "Start Workout\n(Multiplier Mode)",
+                                style = MaterialTheme.typography.labelLarge,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(16.dp)
                             )
@@ -89,6 +90,7 @@ fun WorkoutItem(workoutData: Workout) {
                         ) {
                             Text(
                                 "Start Workout\n(Cadence Mode)",
+                                style = MaterialTheme.typography.labelLarge,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(16.dp)
                             )
@@ -102,16 +104,19 @@ fun WorkoutItem(workoutData: Workout) {
                         Spacer(modifier = Modifier.weight(0.5f))
                         Text(
                             "Distance",
+                            style = MaterialTheme.typography.labelLarge,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1f)
                         )
                         Text(
                             "Multiplier",
+                            style = MaterialTheme.typography.labelLarge,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1f)
                         )
                         Text(
                             "Cadence",
+                            style = MaterialTheme.typography.labelLarge,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1f)
                         )
@@ -134,7 +139,9 @@ fun WorkoutItem(workoutData: Workout) {
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize()
                                 ) {
-                                    Text("x")
+                                    Text("x",
+                                        style = MaterialTheme.typography.labelLarge
+                                    )
                                 }
                             }
                             OutlinedTextField(
@@ -165,7 +172,8 @@ fun WorkoutItem(workoutData: Workout) {
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                Text("+")
+                                Text("+",
+                                    style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }
@@ -185,7 +193,8 @@ fun WorkoutItem(workoutData: Workout) {
                                     .fillMaxHeight()
                                     .padding(16.dp, 0.dp)
                             ) {
-                                Text("Delete workout")
+                                Text("Delete workout",
+                                    style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }

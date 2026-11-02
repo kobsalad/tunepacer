@@ -1,7 +1,6 @@
 package com.tunepacer.run
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
@@ -56,8 +55,6 @@ fun RunSetupScreen(
                 label = "Workout"
             )
         }
-
-        Spacer(modifier = Modifier.weight(1f))
 
         NavDisplay(
             backStack = backStack,
