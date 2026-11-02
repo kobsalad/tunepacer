@@ -19,7 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun WorkoutScreen() {
+fun WorkoutScreen(
+    onStartWorkout: (Workout) -> Unit = {}
+) {
     val workoutsData = listOf(
         Workout(
             "5k Tempo",
@@ -44,7 +46,10 @@ fun WorkoutScreen() {
         modifier = Modifier.padding(8.dp)
     ) {
         items(workoutsData) { workoutData ->
-            WorkoutItem(workoutData)
+            WorkoutItem(
+                workoutData = workoutData,
+                onStartWorkout = onStartWorkout
+            )
         }
         item {
             Row(modifier = Modifier.fillMaxWidth()) {

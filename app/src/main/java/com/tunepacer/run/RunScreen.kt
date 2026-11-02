@@ -13,6 +13,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.tunepacer.run.freerun.FreeRunSettings
 import com.tunepacer.run.freerun.FreeRunStatsScreen
+import com.tunepacer.run.workout.WorkoutStatsScreen
 import com.tunepacer.ui.util.horizontalTabTransition
 import kotlinx.serialization.Serializable
 
@@ -20,10 +21,12 @@ private sealed interface RunNavKey {
     @Serializable
     data object FreeRunStats: NavKey
     @Serializable
+    data object WorkoutStats: NavKey
+    @Serializable
     data object Setup: NavKey
 }
 
-private val runScreens = listOf(RunNavKey.FreeRunStats, RunNavKey.Setup)
+private val runScreens = listOf(RunNavKey.FreeRunStats, RunNavKey.WorkoutStats, RunNavKey.Setup)
 
 @Composable
 fun RunScreen() {
@@ -41,9 +44,14 @@ fun RunScreen() {
                     FreeRunStatsScreen(
                         settings = freeRunSettings,
                         onSettingsChange = { freeRunSettings = it },
-                        onEndRun = {
-                            backStack.removeLastOrNull()
-                        }
+                        onEndRun = { backStack.removeLastOrNull() }
+                    )
+                }
+            }
+            entry(RunNavKey.WorkoutStats, RunNavKey.WorkoutStats.toString()) {
+                saveableStateHolder.SaveableStateProvider(RunNavKey.WorkoutStats.toString()) {
+                    WorkoutStatsScreen(
+                        onEndRun = { backStack.removeLastOrNull() }
                     )
                 }
             }
@@ -54,6 +62,9 @@ fun RunScreen() {
                         onFreeRunSettingsChange = { freeRunSettings = it },
                         onStartFreeRun = {
                             backStack.add(RunNavKey.FreeRunStats)
+                        },
+                        onStartWorkout = { _ ->
+                            backStack.add(RunNavKey.WorkoutStats)
                         }
                     )
                 }
