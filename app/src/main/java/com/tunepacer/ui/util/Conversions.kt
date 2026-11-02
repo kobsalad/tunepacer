@@ -24,12 +24,12 @@ fun Int.formatTime(): String {
     return time
 }
 
-fun formatPace(distance: Double, time: Int): String =
+fun formatPace(distance: Float, time: Int): String =
     (time / distance.metersToMiles())
         .toInt().formatTime()
 
-fun Double.formatDistance(unit: String): String =
+fun Float.formatDistance(unit: String): String =
     "%.2f %s".format(this, unit)
 
-fun Double.metersToMiles(): Double = this / 1609.344
-fun Double.milesToMeters(): Double = this * 1609.344
+fun Float.metersToMiles(): Float = this / 1609.344f
+fun Float.milesToMeters(): Float = this * 1609.344f
