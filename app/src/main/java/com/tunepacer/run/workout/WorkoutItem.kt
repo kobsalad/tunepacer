@@ -26,7 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun WorkoutItem(workoutData: Workout) {
+fun WorkoutItem(
+    workoutData: Workout,
+    onStartWorkout: (Workout) -> Unit = {}
+) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Surface (
@@ -70,20 +73,20 @@ fun WorkoutItem(workoutData: Workout) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Surface(
-                            onClick = {},
+                            onClick = { onStartWorkout(workoutData) },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ) {
                             Text(
-                                "Start Workout\n(Multiplier Mode)",
+                                "Start Workout\n(Pace Mode)",
                                 style = MaterialTheme.typography.labelLarge,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
                         Surface(
-                            onClick = {},
+                            onClick = { onStartWorkout(workoutData) },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -155,7 +158,7 @@ fun WorkoutItem(workoutData: Workout) {
                                 modifier = Modifier.weight(1f)
                             )
                             OutlinedTextField(
-                                value = segment.tempo.toString(),
+                                value = segment.cadence.toString(),
                                 onValueChange = {},
                                 modifier = Modifier.weight(1f)
                             )
