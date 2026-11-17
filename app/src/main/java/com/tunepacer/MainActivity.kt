@@ -10,7 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.tunepacer.gps.Gps
+import com.tunepacer.sensors.Run
 import com.tunepacer.spotify.SpotifyBrowser
 
 class MainActivity : ComponentActivity() {
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
         }
 
         SpotifyBrowser.init(applicationContext)
-        Gps.init(applicationContext)
+        Run.init(applicationContext)
 
         setContent { App() }
     }

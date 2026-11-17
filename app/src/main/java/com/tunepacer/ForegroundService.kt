@@ -9,7 +9,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.IBinder
 import androidx.core.content.ContextCompat
-import com.tunepacer.gps.Gps
+import com.tunepacer.sensors.Run
 
 class ForegroundService : Service() {
     companion object {
@@ -46,7 +46,7 @@ class ForegroundService : Service() {
 
     // Trigger shutdown of everything when the user fully closes the app
     override fun onTaskRemoved(rootIntent: Intent?) {
-        Gps.stopRun()
+        Run.stopRun()
         stopSelf()
     }
 }
