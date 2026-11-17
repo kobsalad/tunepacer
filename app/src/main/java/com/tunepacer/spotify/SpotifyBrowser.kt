@@ -70,8 +70,4 @@ object SpotifyBrowser {
             })
         }
     }
-
-    fun shutdown() {
-        session.close()
-    }
 }

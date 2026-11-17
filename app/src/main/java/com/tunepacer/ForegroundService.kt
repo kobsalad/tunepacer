@@ -8,10 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.IBinder
-import android.os.Process
 import androidx.core.content.ContextCompat
 import com.tunepacer.gps.Gps
-import com.tunepacer.spotify.SpotifyBrowser
 
 class ForegroundService : Service() {
     companion object {
@@ -48,9 +46,7 @@ class ForegroundService : Service() {
 
     // Trigger shutdown of everything when the user fully closes the app
     override fun onTaskRemoved(rootIntent: Intent?) {
-        SpotifyBrowser.shutdown()
         Gps.stopRun()
         stopSelf()
-        Process.killProcess(Process.myPid())
     }
 }
