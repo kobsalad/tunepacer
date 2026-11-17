@@ -48,7 +48,8 @@ fun RunScreen() {
                         settings = freeRunSettings,
                         onSettingsChange = { freeRunSettings = it },
                         onEndRun = {
-                            backStack.removeLastOrNull()
+                            backStack.clear()
+                            backStack.add(RunNavKey.Setup)
                             Gps.stopRun()
                         }
                     )
@@ -58,7 +59,8 @@ fun RunScreen() {
                 saveableStateHolder.SaveableStateProvider(RunNavKey.WorkoutStats.toString()) {
                     WorkoutStatsScreen(
                         onEndRun = {
-                            backStack.removeLastOrNull()
+                            backStack.clear()
+                            backStack.add(RunNavKey.Setup)
                             Gps.stopRun()
                         }
                     )
@@ -70,10 +72,12 @@ fun RunScreen() {
                         freeRunSettings = freeRunSettings,
                         onFreeRunSettingsChange = { freeRunSettings = it },
                         onStartFreeRun = {
+                            backStack.clear()
                             backStack.add(RunNavKey.FreeRunStats)
                             Gps.startRun(context)
                         },
                         onStartWorkout = {
+                            backStack.clear()
                             backStack.add(RunNavKey.WorkoutStats)
                             Gps.startRun(context)
                         }
