@@ -1,8 +1,6 @@
 package com.tunepacer.spotify
 
 import android.content.Context
-import android.content.Intent
-import androidx.core.content.ContextCompat
 import org.json.JSONObject
 import org.mozilla.geckoview.GeckoResult
 import org.mozilla.geckoview.GeckoRuntime
@@ -39,12 +37,6 @@ object SpotifyBrowser {
     fun init(applicationContext: Context) {
         if (initStarted) return
         initStarted = true
-
-        // Start foreground service to allow audio playback when app is minimized
-        ContextCompat.startForegroundService(
-            applicationContext,
-            Intent(applicationContext, PlaybackService::class.java)
-        )
 
         runtime = GeckoRuntime.create(
             applicationContext,

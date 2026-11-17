@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.geckoview)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
