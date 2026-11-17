@@ -29,7 +29,7 @@ object Run {
     // Starts the timer and both sensors
     fun startRun(context: Context) {
         Gps.startRun(context)
-        Pedometer.startRun()
+        Pedometer.startRun(context)
 
         _time.value = 0
 
