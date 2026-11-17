@@ -1,7 +1,6 @@
 package com.tunepacer
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -15,10 +14,13 @@ import com.tunepacer.gps.Gps
 import com.tunepacer.spotify.SpotifyBrowser
 
 class MainActivity : ComponentActivity() {
+    // Start foreground service once permissions are accepted
     private val locationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
-        ) {}
+        ) {
+            ForegroundService.start(applicationContext)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
-        // Request permissions if needed
+        // Request permissions if needed, else, start foreground service immediately
         if (
             ContextCompat.checkSelfPermission(
                 applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
@@ -46,15 +48,12 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.ACTIVITY_RECOGNITION
                 )
             )
+        } else {
+            ForegroundService.start(applicationContext)
         }
 
         SpotifyBrowser.init(applicationContext)
         Gps.init(applicationContext)
-
-        ContextCompat.startForegroundService(
-            applicationContext,
-            Intent(applicationContext, ForegroundService::class.java)
-        )
 
         setContent { App() }
     }
