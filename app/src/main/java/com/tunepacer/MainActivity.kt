@@ -15,18 +15,10 @@ import com.tunepacer.gps.Gps
 import com.tunepacer.spotify.SpotifyBrowser
 
 class MainActivity : ComponentActivity() {
-    // When location permissions are accepted, call Gps.init()
     private val locationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            if (
-                permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-            ) {
-                Gps.init(applicationContext)
-            }
-        }
+        ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +27,15 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
-        // Call Gps.init(), or request permissions
+        // Request permissions if needed
         if (
             ContextCompat.checkSelfPermission(
                 applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
+            ) != PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(
                 applicationContext, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Gps.init(applicationContext)
-        } else {
             locationPermissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -55,6 +45,7 @@ class MainActivity : ComponentActivity() {
         }
 
         SpotifyBrowser.init(applicationContext)
+        Gps.init(applicationContext)
 
         ContextCompat.startForegroundService(
             applicationContext,
