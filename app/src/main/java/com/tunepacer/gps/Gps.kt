@@ -1,7 +1,6 @@
 package com.tunepacer.gps
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
