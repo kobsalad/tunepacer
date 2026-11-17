@@ -50,12 +50,17 @@ object Gps {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.locations.forEach { location ->
+                    // Filter out low-accuracy GPS jitter
+                    if (location.hasAccuracy() && location.accuracy > 30f) return@forEach
+
                     previousLocation?.let {
                         _distance.value += it.distanceTo(location)
                     }
 
                     previousLocation = location
-                    _speed.value = if (location.hasSpeed()) location.speed else 0f
+
+                    // If pace >= 60 min/mi, set speed to 0
+                    _speed.value = if (location.hasSpeed() && location.speed > 0.44704f) location.speed else 0f
                 }
             }
         }
