@@ -49,22 +49,6 @@ fun FreeRunScreen(
                     }
 
                 }
-                Surface(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    contentColor = MaterialTheme.colorScheme.onTertiary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(32.dp)
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("GPS Ready",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    }
-
-                }
             }
             Spacer(modifier = Modifier.weight(1f))
         }

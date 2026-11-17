@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tunepacer.gps.Gps
 import com.tunepacer.run.freerun.SettingSelector
 import com.tunepacer.run.freerun.StatRow
 import com.tunepacer.ui.util.formatDistance
@@ -46,10 +48,10 @@ fun WorkoutStatsScreen(
     )
 
     // Placeholder data
-    val elapsedTime = 754
-    val distance = 2253.08f
+    val distance by Gps.distance.collectAsState()
+    val time by Gps.time.collectAsState()
+    val speed by Gps.speed.collectAsState()
     val totalDistance = currentWorkout.segments.sumOf { it.distance.toDouble() }.toFloat()
-    val currentPace = 520
     val currentCadence = 172
     val averageCadence = 168
     val currentSegmentIndex = 1
@@ -90,7 +92,7 @@ fun WorkoutStatsScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        elapsedTime.formatTime(),
+                        time.formatTime(),
                         style = MaterialTheme.typography.displayLarge
                     )
                     Text(
@@ -148,8 +150,8 @@ fun WorkoutStatsScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    StatRow("Current pace", currentPace.formatTime() + " /mi")
-                    StatRow("Average pace", formatPace(distance, elapsedTime) + " /mi")
+                    StatRow("Current pace", speed.formatPace() + " /mi")
+                    StatRow("Average pace", (distance / time).formatPace() + " /mi")
                     StatRow("Current cadence", "$currentCadence spm")
                     StatRow("Average cadence", "$averageCadence spm")
                 }

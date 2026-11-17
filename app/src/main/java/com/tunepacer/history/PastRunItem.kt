@@ -51,7 +51,7 @@ fun PastRunItem(pastRunData: PastRun) {
                 if (pastRunData.workoutName != null) {
                     Text(pastRunData.workoutName)
                 }
-                Text("Pace: " + formatPace(pastRunData.distance, pastRunData.time))
+                Text("Pace: " + (pastRunData.distance / pastRunData.time).formatPace())
                 Text("Cadence: " + pastRunData.cadence)
             }
         }

@@ -6,11 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.tunepacer.gps.Gps
 import com.tunepacer.run.freerun.FreeRunSettings
 import com.tunepacer.run.freerun.FreeRunStatsScreen
 import com.tunepacer.run.workout.WorkoutStatsScreen
@@ -35,6 +37,7 @@ fun RunScreen() {
     var freeRunSettings by rememberSaveable(stateSaver = FreeRunSettings.Saver) {
         mutableStateOf(FreeRunSettings())
     }
+    val context = LocalContext.current
 
     NavDisplay(
         backStack = backStack,
@@ -44,14 +47,20 @@ fun RunScreen() {
                     FreeRunStatsScreen(
                         settings = freeRunSettings,
                         onSettingsChange = { freeRunSettings = it },
-                        onEndRun = { backStack.removeLastOrNull() }
+                        onEndRun = {
+                            backStack.removeLastOrNull()
+                            Gps.stopRun()
+                        }
                     )
                 }
             }
             entry(RunNavKey.WorkoutStats, RunNavKey.WorkoutStats.toString()) {
                 saveableStateHolder.SaveableStateProvider(RunNavKey.WorkoutStats.toString()) {
                     WorkoutStatsScreen(
-                        onEndRun = { backStack.removeLastOrNull() }
+                        onEndRun = {
+                            backStack.removeLastOrNull()
+                            Gps.stopRun()
+                        }
                     )
                 }
             }
@@ -62,9 +71,11 @@ fun RunScreen() {
                         onFreeRunSettingsChange = { freeRunSettings = it },
                         onStartFreeRun = {
                             backStack.add(RunNavKey.FreeRunStats)
+                            Gps.startRun(context)
                         },
-                        onStartWorkout = { _ ->
+                        onStartWorkout = {
                             backStack.add(RunNavKey.WorkoutStats)
+                            Gps.startRun(context)
                         }
                     )
                 }
