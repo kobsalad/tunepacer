@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 fun RowScope.BottomNavButton(
     onClick: () -> Unit,
     selected: Boolean,
-    icon: @Composable () -> Unit,
-    label: String
+    label: String,
+    content: @Composable () -> Unit
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
     Surface(
@@ -48,7 +48,7 @@ fun RowScope.BottomNavButton(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            icon()
+            content()
             Text(label,
                 style = MaterialTheme.typography.labelLarge
             )
