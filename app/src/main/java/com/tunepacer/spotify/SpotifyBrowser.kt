@@ -1,6 +1,8 @@
 package com.tunepacer.spotify
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import org.json.JSONObject
 import org.mozilla.geckoview.GeckoResult
 import org.mozilla.geckoview.GeckoRuntime
@@ -50,15 +52,17 @@ object SpotifyBrowser {
                 "resource://android/assets/extensions/spotspeeder/",
                 "spotspeeder@tunepacer.com"
             )
-            .accept({ extension ->
-                extension?.let {
-                    session.webExtensionController.setMessageDelegate(
-                        it, messageDelegate, "tunepacer"
-                    )
+            .accept { extension ->
+                Handler(Looper.getMainLooper()).post {
+                    extension?.let {
+                        session.webExtensionController.setMessageDelegate(
+                            it, messageDelegate, "tunepacer"
+                        )
+                    }
+                    session.open(runtime)
+                    session.loadUri("https://open.spotify.com/")
                 }
-                session.open(runtime)
-                session.loadUri("https://open.spotify.com/")
-            })
+            }
     }
 
     // Set the playback rate of the Spotify browser
