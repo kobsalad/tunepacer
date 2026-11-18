@@ -36,6 +36,12 @@ android {
     buildFeatures {
         compose = true
     }
+
+    lint {
+        checkAllWarnings = true
+        warningsAsErrors = true
+        abortOnError = true
+    }
 }
 
 dependencies {
