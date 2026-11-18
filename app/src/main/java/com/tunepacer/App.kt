@@ -5,14 +5,17 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -95,7 +98,11 @@ fun App() {
                         selected = backStack.lastOrNull() == AppNavKey.Run,
                         label = "Run"
                     ) {
-                        Text("R")
+                        Icon(
+                            painter = painterResource(R.drawable.ic_run),
+                            modifier = Modifier.size(20.dp),
+                            contentDescription = null
+                        )
                     }
                     BottomNavButton(
                         onClick = {
@@ -105,7 +112,11 @@ fun App() {
                         selected = backStack.lastOrNull() == AppNavKey.Spotify,
                         label = "Spotify"
                     ) {
-                        Text("S")
+                        Icon(
+                            painter = painterResource(R.drawable.ic_spotify),
+                            modifier = Modifier.size(20.dp),
+                            contentDescription = null
+                        )
                     }
                     BottomNavButton(
                         onClick = {
@@ -116,7 +127,11 @@ fun App() {
                         selected = backStack.lastOrNull() == AppNavKey.History,
                         label = "History"
                     ) {
-                        Text("H")
+                        Icon(
+                            painter = painterResource(R.drawable.ic_history),
+                            modifier = Modifier.size(20.dp),
+                            contentDescription = null
+                        )
                     }
                 }
             }
