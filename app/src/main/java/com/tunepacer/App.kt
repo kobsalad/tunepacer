@@ -93,18 +93,20 @@ fun App() {
                             backStack.add(AppNavKey.Run)
                         },
                         selected = backStack.lastOrNull() == AppNavKey.Run,
-                        icon = { Text("R") },
                         label = "Run"
-                    )
+                    ) {
+                        Text("R")
+                    }
                     BottomNavButton(
                         onClick = {
                             backStack.clear()
                             backStack.add(AppNavKey.Spotify)
                         },
                         selected = backStack.lastOrNull() == AppNavKey.Spotify,
-                        icon = { Text("S") },
                         label = "Spotify"
-                    )
+                    ) {
+                        Text("S")
+                    }
                     BottomNavButton(
                         onClick = {
                             backStack.clear()
@@ -112,9 +114,10 @@ fun App() {
                             backStack.add(AppNavKey.History)
                         },
                         selected = backStack.lastOrNull() == AppNavKey.History,
-                        icon = { Text("H") },
                         label = "History"
-                    )
+                    ) {
+                        Text("H")
+                    }
                 }
             }
         ) { innerPadding ->
