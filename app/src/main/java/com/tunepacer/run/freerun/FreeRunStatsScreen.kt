@@ -22,7 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tunepacer.gps.Gps
+import com.tunepacer.sensors.Gps
+import com.tunepacer.sensors.Pedometer
+import com.tunepacer.sensors.Run
+import com.tunepacer.ui.util.formatCadence
 import com.tunepacer.ui.util.formatDistance
 import com.tunepacer.ui.util.formatPace
 import com.tunepacer.ui.util.formatTime
@@ -35,11 +38,11 @@ fun FreeRunStatsScreen(
     onEndRun: () -> Unit
 ) {
     // Placeholder data
-    val distance by Gps.distance.collectAsState()
-    val time by Gps.time.collectAsState()
+    val time by Run.time.collectAsState()
     val speed by Gps.speed.collectAsState()
-    val currentCadence = 172
-    val averageCadence = 168
+    val distance by Gps.distance.collectAsState()
+    val cadence by Pedometer.cadence.collectAsState()
+    val steps by Pedometer.steps.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -93,8 +96,8 @@ fun FreeRunStatsScreen(
                 ) {
                     StatRow("Current pace", speed.formatPace() + " /mi")
                     StatRow("Average pace", (distance / time).formatPace() + " /mi")
-                    StatRow("Current cadence", "$currentCadence spm")
-                    StatRow("Average cadence", "$averageCadence spm")
+                    StatRow("Current cadence", formatCadence(cadence))
+                    StatRow("Average cadence", formatCadence(steps, time))
                 }
             }
 

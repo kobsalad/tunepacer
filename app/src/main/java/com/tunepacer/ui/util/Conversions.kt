@@ -5,6 +5,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.math.roundToInt
+import kotlin.math.truncate
 
 // Format Long [epoch s] to "Jul 11, 2026"
 fun Long.formatDate(): String =
@@ -37,8 +38,20 @@ fun Float.formatPace(): String {
     return secondsPerMile.roundToInt().formatTime()
 }
 
+fun formatCadence(cadence: Int): String {
+    return "$cadence spm"
+}
+
+fun formatCadence(steps: Int, time: Int): String {
+    return if (time <= 0) {
+        "--- spm"
+    } else {
+        "${(steps.toFloat() / time * 60).roundToInt()} spm"
+    }
+}
+
 // Format Float [mi] to "5.34 mi"
 fun Float.formatDistance(unit: String): String =
-    "%.2f %s".format(this, unit)
+    "%.2f %s".format(truncate(this * 100) / 100, unit)
 
 fun Float.metersToMiles(): Float = this / 1609.344f

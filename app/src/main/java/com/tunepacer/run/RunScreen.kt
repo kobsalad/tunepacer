@@ -12,10 +12,10 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.tunepacer.gps.Gps
 import com.tunepacer.run.freerun.FreeRunSettings
 import com.tunepacer.run.freerun.FreeRunStatsScreen
 import com.tunepacer.run.workout.WorkoutStatsScreen
+import com.tunepacer.sensors.Run
 import com.tunepacer.ui.util.horizontalTabTransition
 import kotlinx.serialization.Serializable
 
@@ -50,7 +50,7 @@ fun RunScreen() {
                         onEndRun = {
                             backStack.clear()
                             backStack.add(RunNavKey.Setup)
-                            Gps.stopRun()
+                            Run.stopRun()
                         }
                     )
                 }
@@ -61,7 +61,7 @@ fun RunScreen() {
                         onEndRun = {
                             backStack.clear()
                             backStack.add(RunNavKey.Setup)
-                            Gps.stopRun()
+                            Run.stopRun()
                         }
                     )
                 }
@@ -74,12 +74,12 @@ fun RunScreen() {
                         onStartFreeRun = {
                             backStack.clear()
                             backStack.add(RunNavKey.FreeRunStats)
-                            Gps.startRun(context)
+                            Run.startRun(context)
                         },
                         onStartWorkout = {
                             backStack.clear()
                             backStack.add(RunNavKey.WorkoutStats)
-                            Gps.startRun(context)
+                            Run.startRun(context)
                         }
                     )
                 }
