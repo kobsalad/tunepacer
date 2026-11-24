@@ -66,7 +66,10 @@ android {
             if (releaseConfig.storeFile != null && releaseConfig.storeFile!!.exists()) {
                 signingConfig = releaseConfig
             } else {
-                throw GradleException("Release keystore not found at '${releaseConfig.storeFile?.absolutePath}'. Please place 'release.keystore' in the root project directory or configure signing.properties (see signing.properties.example).")
+                val isReleaseTask = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+                if (isReleaseTask) {
+                    throw GradleException("Release keystore not found at '${releaseConfig.storeFile?.absolutePath}'. Please place 'release.keystore' in the root project directory or configure signing.properties (see signing.properties.example).")
+                }
             }
             optimization {
                 enable = false
