@@ -65,12 +65,22 @@ object SpotifyBrowser {
             }
     }
 
-    // Set the playback rate of the Spotify browser
+    // Set the playback rate of the Spotify browser, for pace mode
     fun setPlaybackRate(playbackRate: Float) {
         if (::port.isInitialized) {
             port.postMessage(JSONObject().apply {
                 put("type", "SET_PLAYBACK_RATE")
                 put("playbackRate", playbackRate)
+            })
+        }
+    }
+
+    // Set the target BPM of the Spotify browser, for cadence mode
+    fun setTargetBpm(targetBpm: Int) {
+        if (::port.isInitialized) {
+            port.postMessage(JSONObject().apply {
+                put("type", "SET_TARGET_BPM")
+                put("targetBpm", targetBpm)
             })
         }
     }
