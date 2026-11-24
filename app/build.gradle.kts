@@ -13,7 +13,11 @@ val signingProps = Properties().apply {
     }
 }
 
+val isReleaseTask = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+
 val buildSpotSpeeder = tasks.register<Exec>("buildSpotSpeeder") {
+    description = "Builds the SpotSpeeder WebExtension assets using npm and Vite"
+    group = "build"
     workingDir = file("src/main/assets/extensions/spotspeeder")
     val isWindows = System.getProperty("os.name").lowercase().contains("windows")
     if (isWindows) {
@@ -65,11 +69,8 @@ android {
             val releaseConfig = signingConfigs.getByName("release")
             if (releaseConfig.storeFile != null && releaseConfig.storeFile!!.exists()) {
                 signingConfig = releaseConfig
-            } else {
-                val isReleaseTask = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
-                if (isReleaseTask) {
-                    throw GradleException("Release keystore not found at '${releaseConfig.storeFile?.absolutePath}'. Please place 'release.keystore' in the root project directory or configure signing.properties (see signing.properties.example).")
-                }
+            } else if (isReleaseTask) {
+                throw GradleException("Release keystore not found at '${releaseConfig.storeFile?.absolutePath}'. Please place 'release.keystore' in the root project directory or configure signing.properties (see signing.properties.example).")
             }
             optimization {
                 enable = false
