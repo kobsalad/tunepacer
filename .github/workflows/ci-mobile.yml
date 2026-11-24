@@ -34,6 +34,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: app/src/main/assets/extensions/spotspeeder/package-lock.json
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 

@@ -4,11 +4,30 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+val buildSpotSpeeder = tasks.register<Exec>("buildSpotSpeeder") {
+    workingDir = file("src/main/assets/extensions/spotspeeder")
+    val isWindows = System.getProperty("os.name").lowercase().contains("windows")
+    if (isWindows) {
+        commandLine("cmd", "/c", "npm ci && npm run build")
+    } else {
+        commandLine("sh", "-c", "npm ci && npm run build")
+    }
+
+    inputs.file(file("src/main/assets/extensions/spotspeeder/package.json"))
+    inputs.file(file("src/main/assets/extensions/spotspeeder/package-lock.json"))
+    inputs.dir(file("src/main/assets/extensions/spotspeeder/src"))
+    outputs.dir(file("src/main/assets/extensions/spotspeeder/dist"))
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(buildSpotSpeeder)
+}
+
 android {
     namespace = "com.tunepacer"
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 
