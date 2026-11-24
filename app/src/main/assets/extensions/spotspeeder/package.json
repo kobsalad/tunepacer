@@ -10,7 +10,8 @@
     "dev": "concurrently \"vite build --watch --minify false --config vite.config.main.js\" \"vite build --watch --minify false --config vite.config.messaging.js\"",
     "lint": "eslint .",
     "format:check": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check": "npm run lint && npm run format:check"
   },
   "dependencies": {
     "realtime-bpm-analyzer": "^6.3.0"
