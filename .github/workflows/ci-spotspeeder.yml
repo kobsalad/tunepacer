@@ -1,0 +1,32 @@
+name: CI SpotSpeeder
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app/src/main/assets/extensions/spotspeeder
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: app/src/main/assets/extensions/spotspeeder/package-lock.json
+
+      - name: Clean install Node packages
+        run: npm ci
+
+      - name: Run check
+        run: npm run check
