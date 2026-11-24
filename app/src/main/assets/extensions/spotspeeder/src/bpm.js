@@ -16,11 +16,8 @@ export function setTargetBpm(newTargetBpm) {
   tryUpdatePlaybackRate();
 }
 
-// Set the "Sync With" setting type. When enabled, the stale nativeBpm is invalidated
+// Set the "Sync With" setting type
 export function setSyncWithCadence(enabled) {
-  if (enabled && !syncWithCadence) {
-    nativeBpm = NaN;
-  }
   syncWithCadence = enabled;
 }
 
