@@ -47,13 +47,7 @@ function tryUpdatePlaybackRate() {
 
 // Use doubling and halving to scale playbackRate into a reasonable range
 function normalizePlaybackRate(playbackRate) {
-  while (playbackRate >= 2) {
-    playbackRate /= 2;
-  }
-  while (playbackRate < 1) {
-    playbackRate *= 2;
-  }
-  return playbackRate;
+  return playbackRate / 2 ** Math.round(Math.log2(playbackRate));
 }
 
 // Listen to audioElement. On BPM locks, update settings and try to update playbackRate
