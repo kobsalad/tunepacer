@@ -47,17 +47,21 @@ object SpotifyBrowser {
                 .build()
         )
 
+        Handler(Looper.getMainLooper()).post {
+            session.open(runtime)
+            session.loadUri("https://open.spotify.com/")
+        }
+
+        // Install SpotSpeeder extension
         runtime.webExtensionController
             .installBuiltIn("resource://android/assets/extensions/spotspeeder/")
             .accept { extension ->
-                Handler(Looper.getMainLooper()).post {
-                    extension?.let {
+                if (extension != null) {
+                    Handler(Looper.getMainLooper()).post {
                         session.webExtensionController.setMessageDelegate(
-                            it, messageDelegate, "tunepacer"
+                            extension, messageDelegate, "tunepacer"
                         )
                     }
-                    session.open(runtime)
-                    session.loadUri("https://open.spotify.com/")
                 }
             }
     }
