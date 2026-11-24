@@ -3,8 +3,14 @@ name: CI SpotSpeeder
 on:
   push:
     branches: [main]
+    paths:
+      - 'app/src/main/assets/extensions/spotspeeder/**'
+      - '.github/workflows/ci-spotspeeder.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'app/src/main/assets/extensions/spotspeeder/**'
+      - '.github/workflows/ci-spotspeeder.yml'
 
 jobs:
   check:

@@ -3,8 +3,22 @@ name: CI Mobile
 on:
   push:
     branches: [main]
+    paths:
+      - 'app/**'
+      - '!app/src/main/assets/extensions/**'
+      - 'gradle/**'
+      - '*.kts'
+      - '*.properties'
+      - '.github/workflows/ci-mobile.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'app/**'
+      - '!app/src/main/assets/extensions/**'
+      - 'gradle/**'
+      - '*.kts'
+      - '*.properties'
+      - '.github/workflows/ci-mobile.yml'
 
 jobs:
   check:
