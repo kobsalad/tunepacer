@@ -9,7 +9,9 @@ let audioElement;
 export function setPlaybackRate(newPlaybackRate) {
   console.log(`setPlaybackRate(${newPlaybackRate})`);
   playbackRate = newPlaybackRate;
-  audioElement.playbackRate = playbackRate;
+  if (audioElement) {
+    audioElement.playbackRate = playbackRate;
+  }
 }
 
 export function getPlaybackRate() {
