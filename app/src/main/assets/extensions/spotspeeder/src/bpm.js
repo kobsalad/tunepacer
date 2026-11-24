@@ -31,6 +31,13 @@ export function resetAnalyzer() {
   analyzer?.reset();
 }
 
+// On song change, set playbackRate to 1, and reset analyzer and nativeBpm
+export function handleSongChange() {
+  resetAnalyzer();
+  setPlaybackRate(1);
+  nativeBpm = NaN;
+}
+
 // If possible, set the playback rate to reflect current BPM settings
 function tryUpdatePlaybackRate() {
   if (syncWithCadence && !Number.isNaN(nativeBpm) && !Number.isNaN(targetBpm)) {

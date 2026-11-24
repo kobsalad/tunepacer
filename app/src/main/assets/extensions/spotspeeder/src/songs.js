@@ -2,7 +2,7 @@
  * Handle tracking song changes, and reset the analyzer on each change.
  */
 
-import { resetAnalyzer } from "./bpm";
+import { handleSongChange } from "./bpm";
 
 let lastTrackKey = "";
 // Handle metadata change
@@ -12,7 +12,7 @@ function handleMetadataChange(metadata) {
     // Handle song change by resetting the analyzer
     lastTrackKey = trackKey;
     console.log("Song changed:", trackKey);
-    resetAnalyzer();
+    handleSongChange();
   }
 }
 
