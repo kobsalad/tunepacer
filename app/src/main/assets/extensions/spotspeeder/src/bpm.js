@@ -47,6 +47,7 @@ function tryUpdatePlaybackRate() {
 
 // Use doubling and halving to scale playbackRate into a reasonable range
 function normalizePlaybackRate(playbackRate) {
+  if (!playbackRate || !isFinite(playbackRate) || playbackRate <= 0) return 1;
   return playbackRate / 2 ** Math.round(Math.log2(playbackRate));
 }
 
