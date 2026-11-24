@@ -7,7 +7,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.tunepacer.sensors.Run
-import com.tunepacer.settings.Settings
 import com.tunepacer.spotify.SpotifyBrowser
 
 class MainActivity : ComponentActivity() {

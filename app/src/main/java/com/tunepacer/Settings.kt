@@ -1,4 +1,4 @@
-package com.tunepacer.settings
+package com.tunepacer
 
 import android.content.Context
 import android.content.SharedPreferences
