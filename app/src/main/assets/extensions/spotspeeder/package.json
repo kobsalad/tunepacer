@@ -1,0 +1,27 @@
+{
+  "name": "spotspeeder",
+  "version": "0.1.0",
+  "description": "A GeckoView WebExtension for TunePacer to adjust Spotify playback rate with BPM-smart features",
+  "license": "MIT",
+  "author": "Jacob Lamp",
+  "type": "module",
+  "scripts": {
+    "build": "vite build --config vite.config.main.js && vite build --config vite.config.messaging.js",
+    "dev": "concurrently \"vite build --watch --minify false --config vite.config.main.js\" \"vite build --watch --minify false --config vite.config.messaging.js\"",
+    "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "check": "npm run lint && npm run format:check"
+  },
+  "dependencies": {
+    "realtime-bpm-analyzer": "^6.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.7",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "vite": "^8.3.8"
+  }
+}
