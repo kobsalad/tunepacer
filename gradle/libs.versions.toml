@@ -11,7 +11,7 @@ composeBom = "2026.11.01"
 nav3Core = "1.2.2"
 kotlinSerialization = "2.4.21"
 kotlinxSerializationCore = "1.13.0"
-geckoview = "157.0.20260924084938"
+geckoview = "160.0.20261116130455"
 playServicesLocation = "21.4.0"
 
 [libraries]

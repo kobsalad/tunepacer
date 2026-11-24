@@ -6,7 +6,7 @@
   "author": "Jacob Lamp",
   "type": "module",
   "scripts": {
-    "build": "vite build --config vite.config.main.js && vite build --config vite.config.messaging.js",
+    "build": "node -e \"fs.rmSync('dist', { recursive: true, force: true });\" && vite build --config vite.config.main.js && vite build --config vite.config.messaging.js",
     "dev": "concurrently \"vite build --watch --minify false --config vite.config.main.js\" \"vite build --watch --minify false --config vite.config.messaging.js\"",
     "lint": "eslint .",
     "format:check": "prettier --check .",

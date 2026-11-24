@@ -1,14 +1,46 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+val signingPropsFile = rootProject.file("signing.properties")
+val signingProps = Properties().apply {
+    if (signingPropsFile.exists()) {
+        load(signingPropsFile.inputStream())
+    }
+}
+
+val isReleaseTask = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+
+val buildSpotSpeeder = tasks.register<Exec>("buildSpotSpeeder") {
+    description = "Builds the SpotSpeeder WebExtension assets using npm and Vite"
+    group = "build"
+    workingDir = file("src/main/assets/extensions/spotspeeder")
+    val isWindows = System.getProperty("os.name").lowercase().contains("windows")
+    if (isWindows) {
+        commandLine("cmd", "/c", "npm ci && npm run build")
+    } else {
+        commandLine("sh", "-c", "npm ci && npm run build")
+    }
+
+    inputs.file(file("src/main/assets/extensions/spotspeeder/package.json"))
+    inputs.file(file("src/main/assets/extensions/spotspeeder/package-lock.json"))
+    inputs.dir(file("src/main/assets/extensions/spotspeeder/src"))
+    outputs.dir(file("src/main/assets/extensions/spotspeeder/dist"))
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(buildSpotSpeeder)
+}
+
 android {
     namespace = "com.tunepacer"
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 
@@ -17,13 +49,29 @@ android {
         minSdk = 36
         targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFilePath = System.getenv("SIGNING_STORE_FILE") ?: signingProps.getProperty("storeFile") ?: "release.keystore"
+            storeFile = rootProject.file(storeFilePath)
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: signingProps.getProperty("storePassword") ?: ""
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: signingProps.getProperty("keyAlias") ?: ""
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: signingProps.getProperty("keyPassword") ?: ""
+        }
+    }
+
     buildTypes {
         release {
+            val releaseConfig = signingConfigs.getByName("release")
+            if (releaseConfig.storeFile != null && releaseConfig.storeFile!!.exists()) {
+                signingConfig = releaseConfig
+            } else if (isReleaseTask) {
+                throw GradleException("Release keystore not found at '${releaseConfig.storeFile?.absolutePath}'. Please place 'release.keystore' in the root project directory or configure signing.properties (see signing.properties.example).")
+            }
             optimization {
                 enable = false
             }
