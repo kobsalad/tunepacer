@@ -25,6 +25,13 @@ export function setSyncWithCadence(enabled) {
   syncWithCadence = enabled;
 }
 
+let analyzer;
+// Reset the history of the analyzer so no old BPM data leaks forward
+export function resetAnalyzer() {
+  console.log("resetAnalyzer()");
+  analyzer?.reset();
+}
+
 // If possible, set the playback rate to reflect current BPM settings
 function tryUpdatePlaybackRate() {
   if (
@@ -53,7 +60,7 @@ function normalizePlaybackRate(playbackRate) {
 export async function setupBpmAnalyzer(audioElement) {
   console.log("setupBpmAnalyzer()");
   const audioContext = new AudioContext();
-  const analyzer = await createRealtimeBpmAnalyzer(audioContext);
+  analyzer = await createRealtimeBpmAnalyzer(audioContext);
   const source = audioContext.createMediaElementSource(audioElement);
   source.connect(analyzer.input);
   source.connect(audioContext.destination);
@@ -63,6 +70,7 @@ export async function setupBpmAnalyzer(audioElement) {
       lockedPlaybackRate = getPlaybackRate();
       measuredBpm = reading.bpm;
       tryUpdatePlaybackRate();
+      resetAnalyzer();
     }
   });
 }

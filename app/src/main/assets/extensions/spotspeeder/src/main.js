@@ -5,6 +5,7 @@
 import { setSyncWithCadence, setTargetBpm, setupBpmAnalyzer } from "./bpm";
 import { getAudioElement, setPlaybackRate } from "./playback";
 import { waitUntil } from "./util";
+import "./songs";
 
 (async () => {
   // Listen for events passed from messaging.js
