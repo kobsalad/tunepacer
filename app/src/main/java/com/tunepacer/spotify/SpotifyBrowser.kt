@@ -48,10 +48,7 @@ object SpotifyBrowser {
         )
 
         runtime.webExtensionController
-            .ensureBuiltIn(
-                "resource://android/assets/extensions/spotspeeder/",
-                "spotspeeder@tunepacer.com"
-            )
+            .installBuiltIn("resource://android/assets/extensions/spotspeeder/")
             .accept { extension ->
                 Handler(Looper.getMainLooper()).post {
                     extension?.let {
