@@ -1,12 +1,14 @@
 package com.tunepacer.run.freerun
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,8 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tunepacer.sensors.Gps
@@ -33,21 +37,25 @@ import com.tunepacer.ui.util.metersToMiles
 
 @Composable
 fun FreeRunStatsScreen(
-    settings: FreeRunSettings,
-    onSettingsChange: (FreeRunSettings) -> Unit,
     onEndRun: () -> Unit
 ) {
-    // Placeholder data
     val time by Run.time.collectAsState()
     val speed by Gps.speed.collectAsState()
     val distance by Gps.distance.collectAsState()
     val cadence by Pedometer.cadence.collectAsState()
     val steps by Pedometer.steps.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
-            .fillMaxHeight()
+            .fillMaxSize()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                focusManager.clearFocus()
+            }
             .padding(32.dp, 16.dp)
     ) {
         Column(
@@ -56,7 +64,8 @@ fun FreeRunStatsScreen(
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text("Free Run",
+            Text(
+                "Free Run",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -76,10 +85,12 @@ fun FreeRunStatsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(time.formatTime(),
+                    Text(
+                        time.formatTime(),
                         style = MaterialTheme.typography.displayLarge
                     )
-                    Text(distance.metersToMiles().formatDistance("mi"),
+                    Text(
+                        distance.metersToMiles().formatDistance("mi"),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -101,7 +112,7 @@ fun FreeRunStatsScreen(
                 }
             }
 
-            FreeRunSettingsPanel(settings, onSettingsChange)
+            FreeRunSettingsPanel()
         }
 
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -115,7 +126,8 @@ fun FreeRunStatsScreen(
                     .height(64.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text("End Run",
+                    Text(
+                        "End Run",
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -129,8 +141,6 @@ fun FreeRunStatsScreen(
 @Composable
 private fun FreeRunStatsScreenPreview() {
     FreeRunStatsScreen(
-        settings = FreeRunSettings(),
-        onSettingsChange = {},
         onEndRun = {}
     )
 }
