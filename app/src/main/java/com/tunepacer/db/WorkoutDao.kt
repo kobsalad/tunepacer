@@ -1,0 +1,20 @@
+package com.tunepacer.db
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface WorkoutDao {
+    @Query("SELECT * FROM workouts ORDER BY id DESC")
+    fun observeAll(): Flow<List<WorkoutEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(workout: WorkoutEntity): Long
+
+    @Delete
+    suspend fun delete(workout: WorkoutEntity)
+}
