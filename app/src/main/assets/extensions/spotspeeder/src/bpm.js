@@ -6,8 +6,7 @@ import { createRealtimeBpmAnalyzer } from "realtime-bpm-analyzer";
 import { setPlaybackRate, getPlaybackRate } from "./playback";
 
 let targetBpm = NaN;
-let measuredBpm = NaN;
-let lockedPlaybackRate = 1;
+let nativeBpm = NaN;
 let syncWithCadence = false;
 
 // Set the target BPM, causing playback rate to change as soon as possible
@@ -17,10 +16,10 @@ export function setTargetBpm(newTargetBpm) {
   tryUpdatePlaybackRate();
 }
 
-// Set the "Sync With" setting type. When enabled, the stale measuredBpm is invalidated
+// Set the "Sync With" setting type. When enabled, the stale nativeBpm is invalidated
 export function setSyncWithCadence(enabled) {
   if (enabled && !syncWithCadence) {
-    measuredBpm = NaN;
+    nativeBpm = NaN;
   }
   syncWithCadence = enabled;
 }
@@ -34,14 +33,8 @@ export function resetAnalyzer() {
 
 // If possible, set the playback rate to reflect current BPM settings
 function tryUpdatePlaybackRate() {
-  if (
-    syncWithCadence &&
-    !Number.isNaN(measuredBpm) &&
-    !Number.isNaN(targetBpm)
-  ) {
-    setPlaybackRate(
-      normalizePlaybackRate(lockedPlaybackRate * (targetBpm / measuredBpm)),
-    );
+  if (syncWithCadence && !Number.isNaN(nativeBpm) && !Number.isNaN(targetBpm)) {
+    setPlaybackRate(normalizePlaybackRate(targetBpm / nativeBpm));
   }
 }
 
@@ -59,10 +52,13 @@ export async function setupBpmAnalyzer(audioElement) {
   source.connect(analyzer.input);
   source.connect(audioContext.destination);
   analyzer.on("reading", (reading) => {
-    if (analyzer.state.status === "locked" && reading.bpm !== measuredBpm) {
-      console.log(`Locked ${reading.bpm} BPM`);
-      lockedPlaybackRate = getPlaybackRate();
-      measuredBpm = reading.bpm;
+    if (analyzer.state.status !== "locked") return;
+
+    const newNativeBpm = reading.bpm / getPlaybackRate();
+
+    if (Number.isNaN(nativeBpm) || Math.abs(newNativeBpm - nativeBpm) >= 1) {
+      console.log(`Locked ${Math.round(newNativeBpm)} BPM`);
+      nativeBpm = newNativeBpm;
       tryUpdatePlaybackRate();
       resetAnalyzer();
     }
