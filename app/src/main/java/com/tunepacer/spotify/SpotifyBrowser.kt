@@ -28,9 +28,14 @@ object SpotifyBrowser {
         }
     }
     private lateinit var port: WebExtension.Port
+    private var pendingMessage: JSONObject? = null
     private val messageDelegate = object : WebExtension.MessageDelegate {
         override fun onConnect(port: WebExtension.Port) {
             this@SpotifyBrowser.port = port
+            pendingMessage?.let {
+                port.postMessage(it)
+                pendingMessage = null
+            }
         }
     }
 
@@ -54,7 +59,7 @@ object SpotifyBrowser {
 
         // Install SpotSpeeder extension
         runtime.webExtensionController
-            .installBuiltIn("resource://android/assets/extensions/spotspeeder/")
+            .installBuiltIn("resource://android/assets/extensions/spotspeeder/dist/")
             .accept { extension ->
                 if (extension != null) {
                     Handler(Looper.getMainLooper()).post {
@@ -68,21 +73,25 @@ object SpotifyBrowser {
 
     // Set the playback rate of the Spotify browser, for pace mode
     fun setPlaybackRate(playbackRate: Float) {
-        if (::port.isInitialized) {
-            port.postMessage(JSONObject().apply {
-                put("type", "SET_PLAYBACK_RATE")
-                put("playbackRate", playbackRate)
-            })
-        }
+        postMessage(JSONObject().apply {
+            put("type", "SET_PLAYBACK_RATE")
+            put("playbackRate", playbackRate)
+        })
     }
 
     // Set the target BPM of the Spotify browser, for cadence mode
     fun setTargetBpm(targetBpm: Int) {
+        postMessage(JSONObject().apply {
+            put("type", "SET_TARGET_BPM")
+            put("targetBpm", targetBpm)
+        })
+    }
+
+    private fun postMessage(message: JSONObject) {
         if (::port.isInitialized) {
-            port.postMessage(JSONObject().apply {
-                put("type", "SET_TARGET_BPM")
-                put("targetBpm", targetBpm)
-            })
+            port.postMessage(message)
+        } else {
+            pendingMessage = message
         }
     }
 }

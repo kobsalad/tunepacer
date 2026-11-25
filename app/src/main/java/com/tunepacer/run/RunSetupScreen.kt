@@ -30,7 +30,7 @@ private val runSetupTabs = listOf(RunSetupNavKey.FreeRun, RunSetupNavKey.Workout
 @Composable
 fun RunSetupScreen(
     onStartFreeRun: () -> Unit,
-    onStartWorkout: (Workout) -> Unit = {}
+    onStartWorkout: (Workout, syncWithCadence: Boolean) -> Unit = { _, _ -> }
 ) {
     val backStack = rememberNavBackStack(RunSetupNavKey.FreeRun)
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -85,6 +85,6 @@ fun RunSetupScreen(
 private fun RunSetupScreenPreview() {
     RunSetupScreen(
         onStartFreeRun = {},
-        onStartWorkout = {}
+        onStartWorkout = { _, _ -> }
     )
 }

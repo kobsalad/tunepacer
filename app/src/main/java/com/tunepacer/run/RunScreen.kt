@@ -21,6 +21,7 @@ import com.tunepacer.run.workout.WorkoutStatsScreen
 import com.tunepacer.sensors.Gps
 import com.tunepacer.sensors.Pedometer
 import com.tunepacer.sensors.Run
+import com.tunepacer.spotify.SpotifyBrowser
 import com.tunepacer.ui.util.horizontalTabTransition
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -44,6 +45,7 @@ fun RunScreen() {
     val pastRunDao = remember(context) { AppDatabase.getInstance(context).pastRunDao() }
     val coroutineScope = rememberCoroutineScope()
     var selectedWorkout by remember { mutableStateOf<Workout?>(null) }
+    var workoutSyncWithCadence by remember { mutableStateOf(false) }
 
     fun endRun(workoutName: String?) {
         val time = Run.time.value
@@ -61,6 +63,7 @@ fun RunScreen() {
                 )
             )
         }
+        SpotifyBrowser.setPlaybackRate(1f)
         backStack.clear()
         backStack.add(RunNavKey.Setup)
         Run.stopRun()
@@ -80,6 +83,8 @@ fun RunScreen() {
                 saveableStateHolder.SaveableStateProvider(RunNavKey.WorkoutStats.toString()) {
                     WorkoutStatsScreen(
                         workout = selectedWorkout,
+                        syncWithCadence = workoutSyncWithCadence,
+                        onSyncWithCadenceChange = { workoutSyncWithCadence = it },
                         onEndRun = { endRun(workoutName = selectedWorkout?.workoutName) }
                     )
                 }
@@ -93,8 +98,9 @@ fun RunScreen() {
                             backStack.add(RunNavKey.FreeRunStats)
                             Run.startRun(context)
                         },
-                        onStartWorkout = { workout ->
+                        onStartWorkout = { workout, syncWithCadence ->
                             selectedWorkout = workout
+                            workoutSyncWithCadence = syncWithCadence
                             backStack.clear()
                             backStack.add(RunNavKey.WorkoutStats)
                             Run.startRun(context)
