@@ -3,7 +3,6 @@ package com.tunepacer.db
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +12,7 @@ interface WorkoutDao {
     @Query("SELECT * FROM workouts ORDER BY id DESC")
     fun observeAll(): Flow<List<WorkoutEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun insert(workout: WorkoutEntity): Long
 
     @Update
