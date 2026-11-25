@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tunepacer.run.RunPlaybackSync
 import com.tunepacer.run.freerun.SettingSelector
 import com.tunepacer.run.freerun.StatRow
 import com.tunepacer.sensors.Gps
@@ -60,6 +61,13 @@ fun WorkoutStatsScreen(
     val currentSegmentIndex = 1
 
     var selectedMode by rememberSaveable { mutableStateOf("Pace") }
+
+    RunPlaybackSync(
+        speed = speed,
+        cadence = cadence,
+        workout = workout,
+        workoutSyncWithCadence = selectedMode == "Cadence"
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),

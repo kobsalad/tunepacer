@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tunepacer.run.RunPlaybackSync
 import com.tunepacer.sensors.Gps
 import com.tunepacer.sensors.Pedometer
 import com.tunepacer.sensors.Run
@@ -45,6 +46,8 @@ fun FreeRunStatsScreen(
     val cadence by Pedometer.cadence.collectAsState()
     val steps by Pedometer.steps.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    RunPlaybackSync(speed = speed, cadence = cadence)
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),

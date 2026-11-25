@@ -21,6 +21,7 @@ import com.tunepacer.run.workout.WorkoutStatsScreen
 import com.tunepacer.sensors.Gps
 import com.tunepacer.sensors.Pedometer
 import com.tunepacer.sensors.Run
+import com.tunepacer.spotify.SpotifyBrowser
 import com.tunepacer.ui.util.horizontalTabTransition
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -61,6 +62,7 @@ fun RunScreen() {
                 )
             )
         }
+        SpotifyBrowser.setPlaybackRate(1f)
         backStack.clear()
         backStack.add(RunNavKey.Setup)
         Run.stopRun()
