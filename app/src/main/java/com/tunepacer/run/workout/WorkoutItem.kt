@@ -37,7 +37,7 @@ import com.tunepacer.ui.util.clearFocusOnTap
 @Composable
 fun WorkoutItem(
     workoutData: WorkoutEntity,
-    onStartWorkout: (Workout) -> Unit = {},
+    onStartWorkout: (Workout, syncWithCadence: Boolean) -> Unit = { _, _ -> },
     onUpdateWorkout: (WorkoutEntity) -> Unit = {},
     onDeleteWorkout: () -> Unit = {}
 ) {
@@ -105,7 +105,7 @@ fun WorkoutItem(
                     ) {
                         Surface(
                             onClick = {
-                                onStartWorkout(Workout(workoutName, segments))
+                                onStartWorkout(Workout(workoutName, segments), false)
                             },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
@@ -120,7 +120,7 @@ fun WorkoutItem(
                         }
                         Surface(
                             onClick = {
-                                onStartWorkout(Workout(workoutName, segments))
+                                onStartWorkout(Workout(workoutName, segments), true)
                             },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,

@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutScreen(
-    onStartWorkout: (Workout) -> Unit = {}
+    onStartWorkout: (Workout, syncWithCadence: Boolean) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     val workoutDao = remember(context) { AppDatabase.getInstance(context).workoutDao() }
@@ -56,7 +56,7 @@ fun WorkoutScreen(
 @Composable
 private fun WorkoutList(
     workouts: List<WorkoutEntity>,
-    onStartWorkout: (Workout) -> Unit,
+    onStartWorkout: (Workout, syncWithCadence: Boolean) -> Unit,
     onUpdateWorkout: (WorkoutEntity) -> Unit,
     onDeleteWorkout: (WorkoutEntity) -> Unit,
     onCreateWorkout: () -> Unit
@@ -101,7 +101,7 @@ private fun WorkoutList(
 private fun WorkoutScreenPreview() {
     WorkoutList(
         workouts = emptyList(),
-        onStartWorkout = {},
+        onStartWorkout = { _, _ -> },
         onUpdateWorkout = {},
         onDeleteWorkout = {},
         onCreateWorkout = {}

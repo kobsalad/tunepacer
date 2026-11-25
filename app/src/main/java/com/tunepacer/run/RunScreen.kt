@@ -45,6 +45,7 @@ fun RunScreen() {
     val pastRunDao = remember(context) { AppDatabase.getInstance(context).pastRunDao() }
     val coroutineScope = rememberCoroutineScope()
     var selectedWorkout by remember { mutableStateOf<Workout?>(null) }
+    var workoutSyncWithCadence by remember { mutableStateOf(false) }
 
     fun endRun(workoutName: String?) {
         val time = Run.time.value
@@ -82,6 +83,8 @@ fun RunScreen() {
                 saveableStateHolder.SaveableStateProvider(RunNavKey.WorkoutStats.toString()) {
                     WorkoutStatsScreen(
                         workout = selectedWorkout,
+                        syncWithCadence = workoutSyncWithCadence,
+                        onSyncWithCadenceChange = { workoutSyncWithCadence = it },
                         onEndRun = { endRun(workoutName = selectedWorkout?.workoutName) }
                     )
                 }
@@ -95,8 +98,9 @@ fun RunScreen() {
                             backStack.add(RunNavKey.FreeRunStats)
                             Run.startRun(context)
                         },
-                        onStartWorkout = { workout ->
+                        onStartWorkout = { workout, syncWithCadence ->
                             selectedWorkout = workout
+                            workoutSyncWithCadence = syncWithCadence
                             backStack.clear()
                             backStack.add(RunNavKey.WorkoutStats)
                             Run.startRun(context)

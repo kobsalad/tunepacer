@@ -16,11 +16,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +38,8 @@ import com.tunepacer.ui.util.metersToMiles
 @Composable
 fun WorkoutStatsScreen(
     workout: Workout? = null,
+    syncWithCadence: Boolean = false,
+    onSyncWithCadenceChange: (Boolean) -> Unit = {},
     onEndRun: () -> Unit
 ) {
     val currentWorkout = workout ?: Workout(
@@ -58,16 +58,20 @@ fun WorkoutStatsScreen(
     val cadence by Pedometer.cadence.collectAsState()
     val steps by Pedometer.steps.collectAsState()
     val totalDistance = currentWorkout.segments.sumOf { it.distance.toDouble() }.toFloat()
-    val currentSegmentIndex = 1
+    val currentSegmentIndex = activeWorkoutSegmentIndex(currentWorkout.segments, distance)
 
-    var selectedMode by rememberSaveable { mutableStateOf("Pace") }
+    currentWorkout.segments.getOrNull(currentSegmentIndex)?.let { activeSegment ->
+        RunPlaybackSync(
+            speed = speed,
+            cadence = cadence,
+            workoutSegment = activeSegment,
+            workoutSyncWithCadence = syncWithCadence
+        )
+    }
 
-    RunPlaybackSync(
-        speed = speed,
-        cadence = cadence,
-        workout = workout,
-        workoutSyncWithCadence = selectedMode == "Cadence"
-    )
+    LaunchedEffect(currentSegmentIndex) {
+        if (currentSegmentIndex == currentWorkout.segments.size) onEndRun()
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -129,7 +133,7 @@ fun WorkoutStatsScreen(
 
                     currentWorkout.segments.forEachIndexed { index, segment ->
                         val isActive = index == currentSegmentIndex
-                        val targetText = if (selectedMode == "Pace") "${segment.multiplier}x" else "${segment.cadence} spm"
+                        val targetText = if (syncWithCadence) "${segment.cadence} spm" else "${segment.multiplier}x"
                         val distanceText = segment.distance.metersToMiles().formatDistance("mi")
 
                         Row(
@@ -171,8 +175,8 @@ fun WorkoutStatsScreen(
             SettingSelector(
                 name = "Sync with",
                 options = listOf("Pace", "Cadence"),
-                selectedOption = selectedMode,
-                onOptionSelected = { selectedMode = it }
+                selectedOption = if (syncWithCadence) "Cadence" else "Pace",
+                onOptionSelected = { onSyncWithCadenceChange(it == "Cadence") }
             )
         }
 
@@ -204,4 +208,13 @@ private fun WorkoutStatsScreenPreview() {
     WorkoutStatsScreen(
         onEndRun = {}
     )
+}
+
+internal fun activeWorkoutSegmentIndex(segments: List<WorkoutSegment>, distance: Float): Int {
+    var segmentEndDistance = 0f
+    segments.forEachIndexed { index, segment ->
+        segmentEndDistance += segment.distance
+        if (distance < segmentEndDistance) return index
+    }
+    return segments.size
 }

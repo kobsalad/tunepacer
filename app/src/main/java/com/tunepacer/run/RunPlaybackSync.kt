@@ -3,23 +3,22 @@ package com.tunepacer.run
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.tunepacer.Settings
-import com.tunepacer.run.workout.Workout
+import com.tunepacer.run.workout.WorkoutSegment
 import com.tunepacer.spotify.SpotifyBrowser
 
 @Composable
 fun RunPlaybackSync(
     speed: Float,
     cadence: Int,
-    workout: Workout? = null,
+    workoutSegment: WorkoutSegment? = null,
     workoutSyncWithCadence: Boolean = false
 ) {
-    if (workout != null) {
-        LaunchedEffect(workout, workoutSyncWithCadence) {
-            val segment = workout.segments.first()
+    if (workoutSegment != null) {
+        LaunchedEffect(workoutSegment, workoutSyncWithCadence) {
             if (workoutSyncWithCadence) {
-                SpotifyBrowser.setTargetBpm(segment.cadence)
+                SpotifyBrowser.setTargetBpm(workoutSegment.cadence)
             } else {
-                SpotifyBrowser.setPlaybackRate(segment.multiplier)
+                SpotifyBrowser.setPlaybackRate(workoutSegment.multiplier)
             }
         }
         return
