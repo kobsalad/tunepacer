@@ -30,18 +30,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.tunepacer.db.WorkoutEntity
 import com.tunepacer.ui.components.NumericInput
 import com.tunepacer.ui.util.clearFocusOnTap
 
 @Composable
 fun WorkoutItem(
-    workoutData: Workout,
-    onStartWorkout: (Workout) -> Unit = {}
+    workoutData: WorkoutEntity,
+    onStartWorkout: (Workout) -> Unit = {},
+    onUpdateWorkout: (WorkoutEntity) -> Unit = {},
+    onDeleteWorkout: () -> Unit = {}
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var workoutName by remember(workoutData) { mutableStateOf(workoutData.workoutName) }
-    var segments by remember(workoutData) { mutableStateOf(workoutData.segments) }
+    var workoutName by remember(workoutData.id) { mutableStateOf(workoutData.workoutName) }
+    var segments by remember(workoutData.id) { mutableStateOf(workoutData.segments) }
     val focusManager = LocalFocusManager.current
+
+    fun updateWorkout(name: String = workoutName, updatedSegments: List<WorkoutSegment> = segments) {
+        onUpdateWorkout(workoutData.copy(workoutName = name, segments = updatedSegments))
+    }
 
     Surface (
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -65,7 +72,10 @@ fun WorkoutItem(
                     if (expanded) {
                         OutlinedTextField(
                             value = workoutName,
-                            onValueChange = { workoutName = it },
+                            onValueChange = {
+                                workoutName = it
+                                updateWorkout(name = it)
+                            },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
@@ -95,7 +105,7 @@ fun WorkoutItem(
                     ) {
                         Surface(
                             onClick = {
-                                onStartWorkout(workoutData.copy(workoutName = workoutName, segments = segments))
+                                onStartWorkout(Workout(workoutName, segments))
                             },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
@@ -110,7 +120,7 @@ fun WorkoutItem(
                         }
                         Surface(
                             onClick = {
-                                onStartWorkout(workoutData.copy(workoutName = workoutName, segments = segments))
+                                onStartWorkout(Workout(workoutName, segments))
                             },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
@@ -155,22 +165,28 @@ fun WorkoutItem(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Surface(
-                                onClick = {},
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .weight(0.5f),
-                                color = MaterialTheme.colorScheme.secondary,
-                                contentColor = MaterialTheme.colorScheme.onSecondary
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier.fillMaxSize()
+                            if (segments.size > 1) {
+                                Surface(
+                                    onClick = {
+                                        val updatedSegments = segments.toMutableList().also { it.removeAt(index) }
+                                        segments = updatedSegments
+                                        updateWorkout(updatedSegments = updatedSegments)
+                                    },
+                                    modifier = Modifier
+                                        .height(48.dp)
+                                        .weight(0.5f),
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    contentColor = MaterialTheme.colorScheme.onSecondary
                                 ) {
-                                    Text("x",
-                                        style = MaterialTheme.typography.labelLarge
-                                    )
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        Text("x", style = MaterialTheme.typography.labelLarge)
+                                    }
                                 }
+                            } else {
+                                Spacer(modifier = Modifier.weight(0.5f))
                             }
                             NumericInput(
                                 label = null,
@@ -179,9 +195,11 @@ fun WorkoutItem(
                                 isDecimal = true,
                                 modifier = Modifier.weight(1f),
                                 onValueChange = { value ->
-                                    segments = segments.toMutableList().also {
+                                    val updatedSegments = segments.toMutableList().also {
                                         it[index] = segment.copy(distance = value.toFloat())
                                     }
+                                    segments = updatedSegments
+                                    updateWorkout(updatedSegments = updatedSegments)
                                 }
                             )
                             NumericInput(
@@ -192,9 +210,11 @@ fun WorkoutItem(
                                 maxValue = 4f,
                                 modifier = Modifier.weight(1f),
                                 onValueChange = { value ->
-                                    segments = segments.toMutableList().also {
+                                    val updatedSegments = segments.toMutableList().also {
                                         it[index] = segment.copy(multiplier = value.toFloat())
                                     }
+                                    segments = updatedSegments
+                                    updateWorkout(updatedSegments = updatedSegments)
                                 }
                             )
                             NumericInput(
@@ -204,16 +224,22 @@ fun WorkoutItem(
                                 maxIntegerValue = 300,
                                 modifier = Modifier.weight(1f),
                                 onValueChange = { value ->
-                                    segments = segments.toMutableList().also {
+                                    val updatedSegments = segments.toMutableList().also {
                                         it[index] = segment.copy(cadence = value.toInt())
                                     }
+                                    segments = updatedSegments
+                                    updateWorkout(updatedSegments = updatedSegments)
                                 }
                             )
                         }
                     }
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Surface(
-                            onClick = {},
+                            onClick = {
+                                val updatedSegments = segments + WorkoutSegment(400f, 1.5f, 180)
+                                segments = updatedSegments
+                                updateWorkout(updatedSegments = updatedSegments)
+                            },
                             modifier = Modifier.height(48.dp),
                             color = MaterialTheme.colorScheme.tertiary,
                             contentColor = MaterialTheme.colorScheme.onTertiary
@@ -232,7 +258,7 @@ fun WorkoutItem(
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier.fillMaxWidth()) {
                         Surface(
-                            onClick = {},
+                            onClick = onDeleteWorkout,
                             modifier = Modifier.height(48.dp),
                             color = MaterialTheme.colorScheme.secondary,
                             contentColor = MaterialTheme.colorScheme.onSecondary
