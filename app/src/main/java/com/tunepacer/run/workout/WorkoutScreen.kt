@@ -13,48 +13,70 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tunepacer.db.AppDatabase
+import com.tunepacer.db.WorkoutEntity
+import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutScreen(
     onStartWorkout: (Workout) -> Unit = {}
 ) {
-    val workoutsData = listOf(
-        Workout(
-            "5k Tempo",
-            listOf(
-                WorkoutSegment(1600f, 1.1f, 170),
-                WorkoutSegment(5000f, 1.5f, 185),
-                WorkoutSegment(1600f, 1.1f, 170)
-            )
-        ),
-        Workout(
-            "400m Repeats",
-            listOf(
-                WorkoutSegment(400f, 1.5f, 190),
-                WorkoutSegment(200f, 1f, 170),
-                WorkoutSegment(400f, 1.5f, 190),
-                WorkoutSegment(200f, 1f, 170)
-            )
-        )
+    val context = LocalContext.current
+    val workoutDao = remember(context) { AppDatabase.getInstance(context).workoutDao() }
+    val scope = rememberCoroutineScope()
+    val workouts by workoutDao.observeAll().collectAsState(initial = emptyList())
+
+    WorkoutList(
+        workouts = workouts,
+        onStartWorkout = onStartWorkout,
+        onUpdateWorkout = { workout -> scope.launch { workoutDao.update(workout) } },
+        onDeleteWorkout = { workout -> scope.launch { workoutDao.delete(workout) } },
+        onCreateWorkout = {
+            scope.launch {
+                workoutDao.insert(
+                    WorkoutEntity(
+                        workoutName = "New workout",
+                        segments = listOf(WorkoutSegment(400f, 1.5f, 180))
+                    )
+                )
+            }
+        }
     )
+}
+
+@Composable
+private fun WorkoutList(
+    workouts: List<WorkoutEntity>,
+    onStartWorkout: (Workout) -> Unit,
+    onUpdateWorkout: (WorkoutEntity) -> Unit,
+    onDeleteWorkout: (WorkoutEntity) -> Unit,
+    onCreateWorkout: () -> Unit
+) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-        items(workoutsData) { workoutData ->
+        items(workouts, key = { it.id }) { workoutData ->
             WorkoutItem(
                 workoutData = workoutData,
-                onStartWorkout = onStartWorkout
+                onStartWorkout = onStartWorkout,
+                onUpdateWorkout = onUpdateWorkout,
+                onDeleteWorkout = { onDeleteWorkout(workoutData) }
             )
         }
         item {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Surface(
-                    onClick = {},
+                    onClick = onCreateWorkout,
                     modifier = Modifier.height(48.dp),
                     color = MaterialTheme.colorScheme.tertiary,
                     contentColor = MaterialTheme.colorScheme.onTertiary
@@ -63,8 +85,10 @@ fun WorkoutScreen(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        Text("New workout",
-                            style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            "New workout",
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 }
             }
@@ -75,5 +99,11 @@ fun WorkoutScreen(
 @Preview(showBackground = true)
 @Composable
 private fun WorkoutScreenPreview() {
-    WorkoutScreen()
+    WorkoutList(
+        workouts = emptyList(),
+        onStartWorkout = {},
+        onUpdateWorkout = {},
+        onDeleteWorkout = {},
+        onCreateWorkout = {}
+    )
 }

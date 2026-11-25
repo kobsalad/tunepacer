@@ -7,9 +7,9 @@ import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 import kotlin.math.truncate
 
-// Format Long [epoch s] to "Jul 11, 2026"
+// Format Long [epoch ms] to "Jul 11, 2026"
 fun Long.formatDate(): String =
-    Instant.ofEpochSecond(this)
+    Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
         .format(
             DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)

@@ -5,37 +5,50 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlin.random.Random
+import com.tunepacer.db.AppDatabase
+import com.tunepacer.db.PastRunEntity
 
 @Composable
 fun HistoryScreen() {
-    val pastRunsData = MutableList(100) {
-        PastRun(
-            0,
-            if (Random.nextBoolean()) "Workout Name" else null,
-            Random.nextLong(1700000000, 1790000000),
-            (Random.nextFloat() + 1) * (100000 - 1),
-            Random.nextInt(1, 100000),
-            Random.nextInt(100, 200)
-        )
+    val context = LocalContext.current
+    val pastRunsFlow = remember(context) {
+        AppDatabase.getInstance(context).pastRunDao().observeAll()
     }
-    pastRunsData.sortByDescending { it.date }
+    val pastRuns by pastRunsFlow.collectAsState(initial = emptyList())
 
+    PastRunsList(pastRuns.map { it.toPastRun() })
+}
+
+@Composable
+private fun PastRunsList(pastRuns: List<PastRun>) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-        items(pastRunsData) { pastRunData ->
-            PastRunItem(pastRunData)
+        items(pastRuns) { pastRun ->
+            PastRunItem(pastRun)
         }
     }
 }
 
+private fun PastRunEntity.toPastRun() = PastRun(
+    id = id,
+    workoutName = workoutName,
+    date = date,
+    distance = distance,
+    time = time,
+    cadence = cadence
+)
+
 @Preview(showBackground = true)
 @Composable
 private fun HistoryScreenPreview() {
-    HistoryScreen()
+    PastRunsList(emptyList())
 }

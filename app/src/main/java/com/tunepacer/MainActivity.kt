@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
+        Settings.init(applicationContext)
         SpotifyBrowser.init(applicationContext)
         Run.init(applicationContext)
 

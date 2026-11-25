@@ -5,41 +5,40 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-
-data class FreeRunSettings(
-    val syncType: String = "Adaptive",
-    val syncWith: String = "Cadence"
-) {
-    companion object {
-        val Saver = listSaver<FreeRunSettings, String>(
-            save = { listOf(it.syncType, it.syncWith) },
-            restore = { FreeRunSettings(it[0], it[1]) }
-        )
-    }
-}
+import com.tunepacer.Settings
+import com.tunepacer.ui.components.NumericInput
+import com.tunepacer.ui.components.PaceInput
+import com.tunepacer.ui.util.clearFocusOnTap
 
 @Composable
-fun FreeRunSettingsPanel(
-    settings: FreeRunSettings,
-    onSettingsChange: (FreeRunSettings) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+fun FreeRunSettingsPanel() {
+    val currentSyncType = if (Settings.syncTypeAdaptive) "Adaptive" else "Constant"
+    val currentSyncWith = if (Settings.syncWithCadence) "Cadence" else "Pace"
+    val focusManager = LocalFocusManager.current
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.clearFocusOnTap(focusManager)
+    ) {
         SettingSelector(
             "Sync type",
             listOf("Constant", "Adaptive"),
-            settings.syncType,
+            currentSyncType,
             onOptionSelected = { selected ->
-                onSettingsChange(settings.copy(syncType = selected))
+                focusManager.clearFocus()
+                Settings.syncTypeAdaptive = (selected == "Adaptive")
             }
         )
         SettingSelector(
             "Sync with",
             listOf("Pace", "Cadence"),
-            settings.syncWith,
+            currentSyncWith,
             onOptionSelected = { selected ->
-                onSettingsChange(settings.copy(syncWith = selected))
+                focusManager.clearFocus()
+                Settings.syncWithCadence = (selected == "Cadence")
             }
         )
 
@@ -48,19 +47,53 @@ fun FreeRunSettingsPanel(
             color = MaterialTheme.colorScheme.primary
         )
 
-        when (settings.syncType to settings.syncWith) {
-            "Constant" to "Pace" -> {
-                SettingInput("Multiplier", "1.5")
+        when (!Settings.syncTypeAdaptive to Settings.syncWithCadence) {
+            // Constant Pace
+            true to false -> {
+                NumericInput(
+                    label = "Multiplier",
+                    value = Settings.constantPaceMultiplier.toString(),
+                    defaultValue = "1.5",
+                    isDecimal = true,
+                    maxValue = 4f,
+                    onValueChange = { input ->
+                        input.toFloatOrNull()?.let { Settings.constantPaceMultiplier = it }
+                    }
+                )
             }
-            "Adaptive" to "Pace" -> {
-                SettingInput("1.0x", "9:00")
-                SettingInput("1.5x", "7:00")
+            // Adaptive Pace
+            false to false -> {
+                PaceInput(
+                    label = "1.0x",
+                    seconds = Settings.adaptivePaceBase,
+                    onSecondsChange = { newSec ->
+                        Settings.adaptivePaceBase = newSec
+                    }
+                )
+                PaceInput(
+                    label = "1.5x",
+                    seconds = Settings.adaptivePaceFast,
+                    onSecondsChange = { newSec ->
+                        Settings.adaptivePaceFast = newSec
+                    }
+                )
             }
-            "Constant" to "Cadence" -> {
-                SettingInput("Cadence", "180")
+            // Constant Cadence
+            true to true -> {
+                NumericInput(
+                    label = "Cadence",
+                    value = Settings.constantCadenceTarget.toString(),
+                    defaultValue = "180",
+                    maxIntegerValue = 300,
+                    isDecimal = false,
+                    onValueChange = { input ->
+                        input.toIntOrNull()?.let { Settings.constantCadenceTarget = it }
+                    }
+                )
             }
-            "Adaptive" to "Cadence" -> {
-                // No settings for this mode
+            // Adaptive Cadence
+            false to true -> {
+                // No extra settings for this mode
             }
         }
     }

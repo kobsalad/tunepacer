@@ -11,7 +11,6 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.tunepacer.run.freerun.FreeRunScreen
-import com.tunepacer.run.freerun.FreeRunSettings
 import com.tunepacer.run.workout.Workout
 import com.tunepacer.run.workout.WorkoutScreen
 import com.tunepacer.ui.components.TopNavBar
@@ -30,8 +29,6 @@ private val runSetupTabs = listOf(RunSetupNavKey.FreeRun, RunSetupNavKey.Workout
 
 @Composable
 fun RunSetupScreen(
-    freeRunSettings: FreeRunSettings,
-    onFreeRunSettingsChange: (FreeRunSettings) -> Unit,
     onStartFreeRun: () -> Unit,
     onStartWorkout: (Workout) -> Unit = {}
 ) {
@@ -64,8 +61,6 @@ fun RunSetupScreen(
                 entry(RunSetupNavKey.FreeRun, RunSetupNavKey.FreeRun.toString()) {
                     saveableStateHolder.SaveableStateProvider(RunSetupNavKey.FreeRun.toString()) {
                         FreeRunScreen(
-                            settings = freeRunSettings,
-                            onSettingsChange = onFreeRunSettingsChange,
                             onStart = onStartFreeRun
                         )
                     }
@@ -89,8 +84,6 @@ fun RunSetupScreen(
 @Composable
 private fun RunSetupScreenPreview() {
     RunSetupScreen(
-        freeRunSettings = FreeRunSettings(),
-        onFreeRunSettingsChange = {},
         onStartFreeRun = {},
         onStartWorkout = {}
     )
