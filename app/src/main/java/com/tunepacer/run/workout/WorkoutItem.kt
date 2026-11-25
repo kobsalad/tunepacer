@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -18,12 +20,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.tunepacer.ui.components.NumericInput
+import com.tunepacer.ui.util.clearFocusOnTap
 
 @Composable
 fun WorkoutItem(
@@ -31,6 +39,9 @@ fun WorkoutItem(
     onStartWorkout: (Workout) -> Unit = {}
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    var workoutName by remember(workoutData) { mutableStateOf(workoutData.workoutName) }
+    var segments by remember(workoutData) { mutableStateOf(workoutData.segments) }
+    val focusManager = LocalFocusManager.current
 
     Surface (
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -53,12 +64,20 @@ fun WorkoutItem(
                 ) {
                     if (expanded) {
                         OutlinedTextField(
-                            value = workoutData.workoutName,
-                            onValueChange = {},
+                            value = workoutName,
+                            onValueChange = { workoutName = it },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = { focusManager.clearFocus() }
+                            ),
                             modifier = Modifier.width(160.dp)
                         )
                     } else {
-                        Text(workoutData.workoutName)
+                        Text(workoutName)
                     }
                     Text(if (expanded) "▼" else "◀")
                 }
@@ -66,14 +85,18 @@ fun WorkoutItem(
             if (expanded) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clearFocusOnTap(focusManager)
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Surface(
-                            onClick = { onStartWorkout(workoutData) },
+                            onClick = {
+                                onStartWorkout(workoutData.copy(workoutName = workoutName, segments = segments))
+                            },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -86,7 +109,9 @@ fun WorkoutItem(
                             )
                         }
                         Surface(
-                            onClick = { onStartWorkout(workoutData) },
+                            onClick = {
+                                onStartWorkout(workoutData.copy(workoutName = workoutName, segments = segments))
+                            },
                             modifier = Modifier.weight(1f),
                             color = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -124,7 +149,7 @@ fun WorkoutItem(
                             modifier = Modifier.weight(1f)
                         )
                     }
-                    workoutData.segments.forEach { segment ->
+                    segments.forEachIndexed { index, segment ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -147,20 +172,42 @@ fun WorkoutItem(
                                     )
                                 }
                             }
-                            OutlinedTextField(
+                            NumericInput(
+                                label = null,
                                 value = segment.distance.toString(),
-                                onValueChange = {},
-                                modifier = Modifier.weight(1f)
+                                defaultValue = "400",
+                                isDecimal = true,
+                                modifier = Modifier.weight(1f),
+                                onValueChange = { value ->
+                                    segments = segments.toMutableList().also {
+                                        it[index] = segment.copy(distance = value.toFloat())
+                                    }
+                                }
                             )
-                            OutlinedTextField(
+                            NumericInput(
+                                label = null,
                                 value = segment.multiplier.toString(),
-                                onValueChange = {},
-                                modifier = Modifier.weight(1f)
+                                defaultValue = "1.5",
+                                isDecimal = true,
+                                maxValue = 4f,
+                                modifier = Modifier.weight(1f),
+                                onValueChange = { value ->
+                                    segments = segments.toMutableList().also {
+                                        it[index] = segment.copy(multiplier = value.toFloat())
+                                    }
+                                }
                             )
-                            OutlinedTextField(
+                            NumericInput(
+                                label = null,
                                 value = segment.cadence.toString(),
-                                onValueChange = {},
-                                modifier = Modifier.weight(1f)
+                                defaultValue = "180",
+                                maxIntegerValue = 300,
+                                modifier = Modifier.weight(1f),
+                                onValueChange = { value ->
+                                    segments = segments.toMutableList().also {
+                                        it[index] = segment.copy(cadence = value.toInt())
+                                    }
+                                }
                             )
                         }
                     }

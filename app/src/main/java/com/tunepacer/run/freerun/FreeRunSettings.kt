@@ -1,16 +1,17 @@
 package com.tunepacer.run.freerun
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.tunepacer.Settings
+import com.tunepacer.ui.components.NumericInput
+import com.tunepacer.ui.components.PaceInput
+import com.tunepacer.ui.util.clearFocusOnTap
 
 @Composable
 fun FreeRunSettingsPanel() {
@@ -20,9 +21,7 @@ fun FreeRunSettingsPanel() {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.pointerInput(Unit) {
-            detectTapGestures(onTap = { focusManager.clearFocus() })
-        }
+        modifier = Modifier.clearFocusOnTap(focusManager)
     ) {
         SettingSelector(
             "Sync type",
@@ -56,6 +55,7 @@ fun FreeRunSettingsPanel() {
                     value = Settings.constantPaceMultiplier.toString(),
                     defaultValue = "1.5",
                     isDecimal = true,
+                    maxValue = 4f,
                     onValueChange = { input ->
                         input.toFloatOrNull()?.let { Settings.constantPaceMultiplier = it }
                     }
@@ -84,6 +84,7 @@ fun FreeRunSettingsPanel() {
                     label = "Cadence",
                     value = Settings.constantCadenceTarget.toString(),
                     defaultValue = "180",
+                    maxIntegerValue = 300,
                     isDecimal = false,
                     onValueChange = { input ->
                         input.toIntOrNull()?.let { Settings.constantCadenceTarget = it }
